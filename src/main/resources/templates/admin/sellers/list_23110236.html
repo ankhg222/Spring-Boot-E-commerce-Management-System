@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/layout_23110236}">
+<head>
+    <title>Quản lý cửa hàng</title>
+</head>
+<body>
+    <div layout:fragment="content">
+        <div class="row">
+            <div class="col-md-3">
+                <div class="card">
+                    <div class="card-header">
+                        <h5>Quản trị hệ thống</h5>
+                    </div>
+                    <div class="card-body">
+                        <ul class="nav nav-pills flex-column">
+                            <li class="nav-item">
+                                <a class="nav-link" th:href="@{/admin/users}">
+                                    <i class="fas fa-users"></i> Quản lý người dùng
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" th:href="@{/admin/categories}">
+                                    <i class="fas fa-tags"></i> Quản lý danh mục
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" th:href="@{/admin/products}">
+                                    <i class="fas fa-box"></i> Quản lý sản phẩm
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link active" th:href="@{/admin/sellers}">
+                                    <i class="fas fa-store"></i> Quản lý cửa hàng
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-9">
+                <div class="card">
+                    <div class="card-header">
+                        <h4>Quản lý cửa hàng</h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Tên cửa hàng</th>
+                                        <th>Hình ảnh</th>
+                                        <th>Trạng thái</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr th:each="seller : ${sellers}">
+                                        <td th:text="${seller.sellerId}">1</td>
+                                        <td th:text="${seller.sellerName}">Tên cửa hàng</td>
+                                        <td>
+                                            <img th:if="${seller.images != null}" 
+                                                 th:src="${seller.images}" 
+                                                 class="img-thumbnail" 
+                                                 style="width: 50px; height: 50px; object-fit: cover;" 
+                                                 alt="Seller Image">
+                                            <span th:unless="${seller.images != null}" class="text-muted">Không có</span>
+                                        </td>
+                                        <td>
+                                            <span th:if="${seller.status == 1}" class="badge bg-success">Hoạt động</span>
+                                            <span th:unless="${seller.status == 1}" class="badge bg-secondary">Không hoạt động</span>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        
+                        <div th:if="${#lists.isEmpty(sellers)}" class="alert alert-info">
+                            <h4>Chưa có cửa hàng nào</h4>
+                            <p>Hiện tại chưa có cửa hàng nào trong hệ thống.</p>
+                        </div>
+                        
+                        <div class="text-center">
+                            <p class="text-muted">
+                                Tổng số cửa hàng: <span th:text="${#lists.size(sellers)}">0</span>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

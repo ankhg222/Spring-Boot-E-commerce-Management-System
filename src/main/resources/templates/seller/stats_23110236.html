@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/layout_23110236}">
+<head>
+    <title>Thống kê cửa hàng</title>
+</head>
+<body>
+    <div layout:fragment="content">
+        <div class="row">
+            <div class="col-md-3">
+                <div class="card">
+                    <div class="card-header">
+                        <h5>Quản lý cửa hàng</h5>
+                    </div>
+                    <div class="card-body">
+                        <ul class="nav nav-pills flex-column">
+                            <li class="nav-item">
+                                <a class="nav-link" th:href="@{/seller}">
+                                    <i class="fas fa-home"></i> Trang chủ
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" th:href="@{/seller/products}">
+                                    <i class="fas fa-box"></i> Sản phẩm của tôi
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link active" th:href="@{/seller/stats}">
+                                    <i class="fas fa-chart-line"></i> Thống kê
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-9">
+                <div class="card">
+                    <div class="card-header">
+                        <h4>Thống kê cửa hàng: <span th:text="${user.seller.sellerName}">Tên cửa hàng</span></h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="card bg-primary text-white">
+                                    <div class="card-body text-center">
+                                        <h3 th:text="${#lists.size(products)}">0</h3>
+                                        <p>Tổng sản phẩm</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="card bg-success text-white">
+                                    <div class="card-body text-center">
+                                        <h3 th:text="${#lists.isEmpty(products) ? 0 : #aggregates.sum(products.![stock])}">0</h3>
+                                        <p>Tổng tồn kho</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="card bg-warning text-white">
+                                    <div class="card-body text-center">
+                                        <h3 th:text="${#lists.isEmpty(products) ? 0 : #aggregates.sum(products.![wishlist])}">0</h3>
+                                        <p>Tổng yêu thích</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="row mt-4">
+                            <div class="col-12">
+                                <div class="alert alert-info">
+                                    <h5>Thông tin cửa hàng</h5>
+                                    <p><strong>Tên cửa hàng:</strong> <span th:text="${user.seller.sellerName}">Tên cửa hàng</span></p>
+                                    <p><strong>Mã cửa hàng:</strong> <span th:text="${user.seller.sellerId}">1</span></p>
+                                    <p><strong>Trạng thái:</strong> 
+                                        <span th:if="${user.seller.status == 1}" class="badge bg-success">Hoạt động</span>
+                                        <span th:unless="${user.seller.status == 1}" class="badge bg-secondary">Không hoạt động</span>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

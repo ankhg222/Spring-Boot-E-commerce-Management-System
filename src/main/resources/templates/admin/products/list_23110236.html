@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/layout_23110236}">
+<head>
+    <title>Quản lý sản phẩm</title>
+</head>
+<body>
+    <div layout:fragment="content">
+        <div class="row">
+            <div class="col-md-3">
+                <div class="card">
+                    <div class="card-header">
+                        <h5>Quản trị hệ thống</h5>
+                    </div>
+                    <div class="card-body">
+                        <ul class="nav nav-pills flex-column">
+                            <li class="nav-item">
+                                <a class="nav-link" th:href="@{/admin/users}">
+                                    <i class="fas fa-users"></i> Quản lý người dùng
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" th:href="@{/admin/categories}">
+                                    <i class="fas fa-tags"></i> Quản lý danh mục
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link active" th:href="@{/admin/products}">
+                                    <i class="fas fa-box"></i> Quản lý sản phẩm
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" th:href="@{/admin/sellers}">
+                                    <i class="fas fa-store"></i> Quản lý cửa hàng
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-9">
+                <div class="card">
+                    <div class="card-header">
+                        <h4>Quản lý sản phẩm</h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Tên sản phẩm</th>
+                                        <th>Mã sản phẩm</th>
+                                        <th>Danh mục</th>
+                                        <th>Giá</th>
+                                        <th>Stock</th>
+                                        <th>Cửa hàng</th>
+                                        <th>Trạng thái</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr th:each="product : ${products}">
+                                        <td th:text="${product.productId}">1</td>
+                                        <td th:text="${product.productName}">Tên sản phẩm</td>
+                                        <td th:text="${product.productCode}">123456</td>
+                                        <td>
+                                            <span th:text="${product.category.categoryName}" class="badge bg-primary">Danh mục</span>
+                                        </td>
+                                        <td th:text="${#numbers.formatDecimal(product.price, 0, 'COMMA', 0, 'POINT')} + ' VNĐ'">0 VNĐ</td>
+                                        <td th:text="${product.stock}">0</td>
+                                        <td th:text="${product.seller.sellerName}">Cửa hàng</td>
+                                        <td>
+                                            <span th:if="${product.status == 1}" class="badge bg-success">Còn hàng</span>
+                                            <span th:unless="${product.status == 1}" class="badge bg-secondary">Hết hàng</span>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        
+                        <div th:if="${#lists.isEmpty(products)}" class="alert alert-info">
+                            <h4>Chưa có sản phẩm nào</h4>
+                            <p>Hiện tại chưa có sản phẩm nào trong hệ thống.</p>
+                        </div>
+                        
+                        <div class="text-center">
+                            <p class="text-muted">
+                                Tổng số sản phẩm: <span th:text="${#lists.size(products)}">0</span>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/admin-layout_23110236}">
+<head>
+    <title th:text="${user.userId != null ? 'Sửa người dùng' : 'Thêm người dùng'}">Thêm người dùng</title>
+    <link th:href="@{/css/upload.css}" rel="stylesheet">
+</head>
+<body>
+    <div layout:fragment="admin-content">
+        <div class="card">
+            <div class="card-header">
+                <h4 th:text="${user.userId != null ? 'Sửa người dùng' : 'Thêm người dùng'}">Thêm người dùng</h4>
+            </div>
+            <div class="card-body">
+                <form th:action="${user.userId != null ? '/admin/users/edit/' + user.userId : '/admin/users/add'}" 
+                      th:object="${user}" method="post">
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="username" class="form-label">Tên đăng nhập *</label>
+                                <input type="text" class="form-control" id="username" th:field="*{username}" required>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="email" class="form-label">Email *</label>
+                                <input type="email" class="form-control" id="email" th:field="*{email}" required>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="fullname" class="form-label">Họ và tên *</label>
+                                <input type="text" class="form-control" id="fullname" th:field="*{fullname}" required>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="phone" class="form-label">Số điện thoại</label>
+                                <input type="tel" class="form-control" id="phone" th:field="*{phone}">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="password" class="form-label">Mật khẩu *</label>
+                                <input type="password" class="form-control" id="password" th:field="*{password}" required>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="images" class="form-label">Hình ảnh</label>
+                                <div class="upload-container">
+                                    <div class="upload-area" id="uploadArea">
+                                        <div class="upload-icon">
+                                            <i class="fas fa-cloud-upload-alt"></i>
+                                        </div>
+                                        <div class="upload-text">Kéo thả ảnh vào đây hoặc click để chọn</div>
+                                        <div class="upload-subtext">Hỗ trợ: JPG, PNG, GIF (Tối đa 10MB)</div>
+                                        <input type="file" class="upload-input" id="imageInput" accept="image/*">
+                                    </div>
+                                    
+                                    <!-- Upload Progress -->
+                                    <div class="upload-progress" id="uploadProgress">
+                                        <div class="progress-bar">
+                                            <div class="progress-fill" id="progressFill"></div>
+                                        </div>
+                                        <div class="upload-status" id="uploadStatus">Đang upload...</div>
+                                    </div>
+                                    
+                                    <!-- Current Image (for edit) -->
+                                    <div id="currentImage" class="mt-2" th:if="${user.images != null and user.images != ''}">
+                                        <p class="text-muted">Ảnh hiện tại:</p>
+                                        <img th:src="${user.images}" alt="Current Image" 
+                                             style="max-width: 150px; max-height: 150px; object-fit: cover; border-radius: 8px;">
+                                    </div>
+                                    
+                                    <!-- Image Preview -->
+                                    <div class="image-preview-container" id="imagePreview" style="display: none;">
+                                        <img class="image-preview" id="previewImage" src="" alt="Preview">
+                                        <div class="image-actions">
+                                            <button type="button" class="btn btn-upload" onclick="uploadImage()">
+                                                <i class="fas fa-upload"></i> Upload
+                                            </button>
+                                            <button type="button" class="btn btn-remove" onclick="removeImage()">
+                                                <i class="fas fa-trash"></i> Xóa
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- Hidden input để lưu URL ảnh đã upload -->
+                                <input type="hidden" id="uploadedImageUrl" th:field="*{images}">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="roleId" class="form-label">Vai trò *</label>
+                                <select class="form-select" id="roleId" th:field="*{userRole.roleId}" required>
+                                    <option value="">-- Chọn vai trò --</option>
+                                    <option th:each="role : ${roles}" th:value="${role.roleId}" th:text="${role.roleName}"></option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="status" class="form-label">Trạng thái *</label>
+                                <select class="form-select" id="status" th:field="*{status}" required>
+                                    <option value="1">Hoạt động</option>
+                                    <option value="0">Không hoạt động</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="code" class="form-label">Mã code</label>
+                        <input type="text" class="form-control" id="code" th:field="*{code}">
+                    </div>
+                    
+                    <div class="d-flex justify-content-between">
+                        <a th:href="@{/admin/users}" class="btn btn-secondary">Quay lại</a>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save"></i> 
+                            <span th:text="${user.userId != null ? 'Cập nhật' : 'Thêm'}">Thêm</span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+
+<script>
+let selectedFile = null;
+let uploadedImageUrl = '';
+let currentImageUrl = /*[[${user.images}]]*/ '';
+
+const uploadArea = document.getElementById('uploadArea');
+const imageInput = document.getElementById('imageInput');
+const imagePreview = document.getElementById('imagePreview');
+const uploadProgress = document.getElementById('uploadProgress');
+const progressFill = document.getElementById('progressFill');
+const uploadStatus = document.getElementById('uploadStatus');
+const uploadedImageUrlInput = document.getElementById('uploadedImageUrl');
+
+// Drag and drop events
+uploadArea.addEventListener('dragover', (e) => {
+    e.preventDefault();
+    uploadArea.classList.add('dragover');
+});
+
+uploadArea.addEventListener('dragleave', () => {
+    uploadArea.classList.remove('dragover');
+});
+
+uploadArea.addEventListener('drop', (e) => {
+    e.preventDefault();
+    uploadArea.classList.remove('dragover');
+    const files = Array.from(e.dataTransfer.files);
+    if (files.length > 0) {
+        handleFile(files[0]);
+    }
+});
+
+// Click to select file
+uploadArea.addEventListener('click', () => {
+    imageInput.click();
+});
+
+// File input change
+imageInput.addEventListener('change', (e) => {
+    if (e.target.files.length > 0) {
+        handleFile(e.target.files[0]);
+    }
+});
+
+function handleFile(file) {
+    // Check if it's an image
+    if (!file.type.startsWith('image/')) {
+        showStatus('Vui lòng chọn file hình ảnh!', 'error');
+        return;
+    }
+    
+    // Check file size (10MB)
+    if (file.size > 10 * 1024 * 1024) {
+        showStatus('Kích thước file không được vượt quá 10MB!', 'error');
+        return;
+    }
+    
+    selectedFile = file;
+    
+    // Show preview
+    const reader = new FileReader();
+    reader.onload = (e) => {
+        document.getElementById('previewImage').src = e.target.result;
+        imagePreview.style.display = 'block';
+    };
+    reader.readAsDataURL(file);
+}
+
+function uploadImage() {
+    if (!selectedFile) {
+        showStatus('Vui lòng chọn ảnh trước khi upload!', 'error');
+        return;
+    }
+    
+    uploadProgress.style.display = 'block';
+    showStatus('Đang upload...', 'uploading');
+    
+    const formData = new FormData();
+    formData.append('file', selectedFile);
+    
+    // Simulate progress
+    let progress = 0;
+    const progressInterval = setInterval(() => {
+        progress += Math.random() * 15;
+        if (progress > 90) progress = 90;
+        progressFill.style.width = progress + '%';
+    }, 200);
+    
+    fetch('/api/upload', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        clearInterval(progressInterval);
+        progressFill.style.width = '100%';
+        
+        if (data.success) {
+            showStatus('Upload thành công!', 'success');
+            uploadedImageUrl = data.url;
+            uploadedImageUrlInput.value = uploadedImageUrl;
+            
+            setTimeout(() => {
+                uploadProgress.style.display = 'none';
+            }, 2000);
+        } else {
+            showStatus('Lỗi upload: ' + data.error, 'error');
+        }
+    })
+    .catch(error => {
+        clearInterval(progressInterval);
+        console.error('Error:', error);
+        showStatus('Lỗi khi upload file!', 'error');
+    });
+}
+
+function removeImage() {
+    selectedFile = null;
+    uploadedImageUrl = '';
+    imagePreview.style.display = 'none';
+    uploadProgress.style.display = 'none';
+    uploadedImageUrlInput.value = '';
+    imageInput.value = '';
+}
+
+function showStatus(message, type) {
+    uploadStatus.textContent = message;
+    uploadStatus.className = `upload-status status-${type}`;
+}
+
+// Auto upload when file is selected
+imageInput.addEventListener('change', () => {
+    if (imageInput.files.length > 0) {
+        setTimeout(uploadImage, 500);
+    }
+});
+</script>

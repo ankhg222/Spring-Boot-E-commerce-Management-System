@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/layout_23110236}">
+<head>
+    <title th:text="${product.productName}">Chi tiết sản phẩm</title>
+</head>
+<body>
+    <div layout:fragment="content">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="card">
+                    <img th:src="${product.images}" 
+                         th:alt="${product.productName}"
+                         class="card-img-top" 
+                         style="height: 400px; object-fit: cover;"
+                         onerror="this.src='https://via.placeholder.com/500x400?text=No+Image'">
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-body">
+                        <h2 th:text="${product.productName}" class="card-title">Tên sản phẩm</h2>
+                        
+                        <div class="mb-3">
+                            <span class="badge bg-primary me-2" th:text="${product.productCode}">Mã sản phẩm</span>
+                            <span class="badge bg-secondary" th:text="${product.category.categoryName}">Danh mục</span>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <h4 class="text-primary" th:text="${#numbers.formatDecimal(product.price, 0, 'COMMA', 0, 'POINT')} + ' VNĐ'">0 VNĐ</h4>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <h5>Thông tin sản phẩm:</h5>
+                            <ul class="list-unstyled">
+                                <li><strong>Mã sản phẩm:</strong> <span th:text="${product.productCode}">123456</span></li>
+                                <li><strong>Danh mục:</strong> <span th:text="${product.category.categoryName}">Danh mục</span></li>
+                                <li><strong>Số lượng còn lại:</strong> <span th:text="${product.stock}">0</span></li>
+                                <li><strong>Đã bán:</strong> <span th:text="${product.amount}">0</span></li>
+                                <li><strong>Yêu thích:</strong> <span th:text="${product.wishlist}">0</span></li>
+                                <li><strong>Trạng thái:</strong> 
+                                    <span th:if="${product.status == 1}" class="badge bg-success">Còn hàng</span>
+                                    <span th:unless="${product.status == 1}" class="badge bg-secondary">Hết hàng</span>
+                                </li>
+                            </ul>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <h5>Mô tả:</h5>
+                            <p th:text="${product.description}" class="text-muted">Mô tả sản phẩm...</p>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <h5>Thông tin cửa hàng:</h5>
+                            <div class="card bg-light">
+                                <div class="card-body">
+                                    <h6 class="card-title" th:text="${product.seller.sellerName}">Tên cửa hàng</h6>
+                                    <p class="card-text">
+                                        <small class="text-muted">
+                                            Mã cửa hàng: <span th:text="${product.seller.sellerId}">1</span>
+                                        </small>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="d-grid gap-2">
+                            <button class="btn btn-primary btn-lg" th:disabled="${product.status != 1}">
+                                <i class="fas fa-shopping-cart"></i> Thêm vào giỏ hàng
+                            </button>
+                            <a th:href="@{/products}" class="btn btn-secondary">
+                                <i class="fas fa-arrow-left"></i> Quay lại danh sách
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Related Products Section -->
+        <div class="row mt-5">
+            <div class="col-12">
+                <h4>Sản phẩm cùng danh mục</h4>
+                <div class="row">
+                    <div class="col-md-3 mb-3">
+                        <div class="card">
+                            <div class="card-body text-center">
+                                <i class="fas fa-box fa-2x text-muted mb-2"></i>
+                                <p class="text-muted">Tính năng này sẽ được phát triển trong tương lai</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

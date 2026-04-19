@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload Image Component</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link th:href="@{/css/upload.css}" rel="stylesheet">
+</head>
+<body>
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="card">
+                    <div class="card-header">
+                        <h4><i class="fas fa-cloud-upload-alt"></i> Upload Hình Ảnh</h4>
+                    </div>
+                    <div class="card-body">
+                        <!-- Single Image Upload -->
+                        <div class="upload-container">
+                            <div class="upload-area" id="uploadArea">
+                                <div class="upload-icon">
+                                    <i class="fas fa-cloud-upload-alt"></i>
+                                </div>
+                                <div class="upload-text">Kéo thả ảnh vào đây hoặc click để chọn</div>
+                                <div class="upload-subtext">Hỗ trợ: JPG, PNG, GIF (Tối đa 10MB)</div>
+                                <input type="file" class="upload-input" id="imageInput" accept="image/*" multiple>
+                            </div>
+                            
+                            <!-- Upload Progress -->
+                            <div class="upload-progress" id="uploadProgress">
+                                <div class="progress-bar">
+                                    <div class="progress-fill" id="progressFill"></div>
+                                </div>
+                                <div class="upload-status" id="uploadStatus">Đang upload...</div>
+                            </div>
+                            
+                            <!-- Image Preview -->
+                            <div class="image-preview-container" id="imagePreview" style="display: none;">
+                                <img class="image-preview" id="previewImage" src="" alt="Preview">
+                                <div class="image-actions">
+                                    <button type="button" class="btn btn-upload" onclick="uploadImage()">
+                                        <i class="fas fa-upload"></i> Upload
+                                    </button>
+                                    <button type="button" class="btn btn-remove" onclick="removeImage()">
+                                        <i class="fas fa-trash"></i> Xóa
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <!-- Multiple Images Preview -->
+                            <div class="multiple-images-container" id="multipleImages" style="display: none;"></div>
+                        </div>
+                        
+                        <!-- Hidden input để lưu URL ảnh đã upload -->
+                        <input type="hidden" id="uploadedImageUrl" name="images">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        let selectedFiles = [];
+        let uploadedUrls = [];
+        
+        const uploadArea = document.getElementById('uploadArea');
+        const imageInput = document.getElementById('imageInput');
+        const imagePreview = document.getElementById('imagePreview');
+        const multipleImages = document.getElementById('multipleImages');
+        const uploadProgress = document.getElementById('uploadProgress');
+        const progressFill = document.getElementById('progressFill');
+        const uploadStatus = document.getElementById('uploadStatus');
+        const uploadedImageUrl = document.getElementById('uploadedImageUrl');
+        
+        // Drag and drop events
+        uploadArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadArea.classList.add('dragover');
+        });
+        
+        uploadArea.addEventListener('dragleave', () => {
+            uploadArea.classList.remove('dragover');
+        });
+        
+        uploadArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadArea.classList.remove('dragover');
+            const files = Array.from(e.dataTransfer.files);
+            handleFiles(files);
+        });
+        
+        // Click to select files
+        uploadArea.addEventListener('click', () => {
+            imageInput.click();
+        });
+        
+        // File input change
+        imageInput.addEventListener('change', (e) => {
+            const files = Array.from(e.target.files);
+            handleFiles(files);
+        });
+        
+        function handleFiles(files) {
+            // Filter only image files
+            const imageFiles = files.filter(file => file.type.startsWith('image/'));
+            
+            if (imageFiles.length === 0) {
+                showStatus('Vui lòng chọn file hình ảnh!', 'error');
+                return;
+            }
+            
+            // Check file size (10MB)
+            const oversizedFiles = imageFiles.filter(file => file.size > 10 * 1024 * 1024);
+            if (oversizedFiles.length > 0) {
+                showStatus('Một số file có kích thước vượt quá 10MB!', 'error');
+                return;
+            }
+            
+            selectedFiles = imageFiles;
+            
+            if (imageFiles.length === 1) {
+                showSingleImagePreview(imageFiles[0]);
+            } else {
+                showMultipleImagesPreview(imageFiles);
+            }
+        }
+        
+        function showSingleImagePreview(file) {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                document.getElementById('previewImage').src = e.target.result;
+                imagePreview.style.display = 'block';
+                multipleImages.style.display = 'none';
+            };
+            reader.readAsDataURL(file);
+        }
+        
+        function showMultipleImagesPreview(files) {
+            multipleImages.innerHTML = '';
+            
+            files.forEach((file, index) => {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    const imageItem = document.createElement('div');
+                    imageItem.className = 'image-item';
+                    imageItem.innerHTML = `
+                        <img src="${e.target.result}" alt="Preview ${index + 1}">
+                        <button class="remove-btn" onclick="removeImageItem(${index})">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    `;
+                    multipleImages.appendChild(imageItem);
+                };
+                reader.readAsDataURL(file);
+            });
+            
+            imagePreview.style.display = 'none';
+            multipleImages.style.display = 'grid';
+        }
+        
+        function removeImageItem(index) {
+            selectedFiles.splice(index, 1);
+            if (selectedFiles.length === 0) {
+                multipleImages.style.display = 'none';
+            } else if (selectedFiles.length === 1) {
+                showSingleImagePreview(selectedFiles[0]);
+            } else {
+                showMultipleImagesPreview(selectedFiles);
+            }
+        }
+        
+        function uploadImage() {
+            if (selectedFiles.length === 0) {
+                showStatus('Vui lòng chọn ảnh trước khi upload!', 'error');
+                return;
+            }
+            
+            uploadProgress.style.display = 'block';
+            showStatus('Đang upload...', 'uploading');
+            
+            const formData = new FormData();
+            selectedFiles.forEach(file => {
+                formData.append('files', file);
+            });
+            
+            // Simulate progress
+            let progress = 0;
+            const progressInterval = setInterval(() => {
+                progress += Math.random() * 15;
+                if (progress > 90) progress = 90;
+                progressFill.style.width = progress + '%';
+            }, 200);
+            
+            fetch('/api/upload', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                clearInterval(progressInterval);
+                progressFill.style.width = '100%';
+                
+                if (data.success) {
+                    showStatus('Upload thành công!', 'success');
+                    uploadedUrls = Array.isArray(data.urls) ? data.urls : [data.url];
+                    uploadedImageUrl.value = uploadedUrls.join(',');
+                    
+                    setTimeout(() => {
+                        uploadProgress.style.display = 'none';
+                    }, 2000);
+                } else {
+                    showStatus('Lỗi upload: ' + data.error, 'error');
+                }
+            })
+            .catch(error => {
+                clearInterval(progressInterval);
+                console.error('Error:', error);
+                showStatus('Lỗi khi upload file!', 'error');
+            });
+        }
+        
+        function removeImage() {
+            selectedFiles = [];
+            uploadedUrls = [];
+            imagePreview.style.display = 'none';
+            multipleImages.style.display = 'none';
+            uploadProgress.style.display = 'none';
+            uploadedImageUrl.value = '';
+            imageInput.value = '';
+        }
+        
+        function showStatus(message, type) {
+            uploadStatus.textContent = message;
+            uploadStatus.className = `upload-status status-${type}`;
+        }
+        
+        // Auto upload when files are selected (optional)
+        // Uncomment the line below to enable auto upload
+        // imageInput.addEventListener('change', () => setTimeout(uploadImage, 500));
+    </script>
+</body>
+</html>

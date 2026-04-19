@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/layout_23110236}">
+<head>
+    <title>Sản phẩm theo cửa hàng</title>
+</head>
+<body>
+    <div layout:fragment="content">
+        <div class="row">
+            <div class="col-12">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a th:href="@{/products}">Sản phẩm</a></li>
+                        <li class="breadcrumb-item active" th:text="${seller.sellerName}">Tên cửa hàng</li>
+                    </ol>
+                </nav>
+                
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-3">
+                                <img th:if="${seller.images != null}" th:src="${seller.images}" class="img-fluid rounded" alt="Seller Image">
+                                <img th:unless="${seller.images != null}" src="https://via.placeholder.com/200x200?text=No+Image" class="img-fluid rounded" alt="No Image">
+                            </div>
+                            <div class="col-md-9">
+                                <h2 th:text="${seller.sellerName}">Tên cửa hàng</h2>
+                                <p><strong>Mã cửa hàng:</strong> <span th:text="${seller.sellerId}">1</span></p>
+                                <p><strong>Trạng thái:</strong> 
+                                    <span th:if="${seller.status == 1}" class="badge bg-success">Hoạt động</span>
+                                    <span th:unless="${seller.status == 1}" class="badge bg-secondary">Không hoạt động</span>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="row">
+            <div th:each="product : ${products}" class="col-md-6 mb-4">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <img th:if="${product.images != null}" th:src="${product.images}" class="img-fluid rounded" style="height: 150px; object-fit: cover;" alt="Product Image">
+                                <img th:unless="${product.images != null}" src="https://via.placeholder.com/150x150?text=No+Image" class="img-fluid rounded" style="height: 150px; object-fit: cover;" alt="No Image">
+                            </div>
+                            <div class="col-md-8">
+                                <h5 class="card-title">
+                                    <a th:href="@{'/products/' + ${product.productId}}" th:text="${product.productName}" class="text-decoration-none">Tên sản phẩm</a>
+                                </h5>
+                                <p class="card-text">
+                                    <strong>Mã sản phẩm:</strong> <span th:text="${product.productCode}">123456</span><br>
+                                    <strong>Danh mục:</strong> <span th:text="${product.category.categoryName}">Danh mục</span><br>
+                                    <strong>Giá:</strong> <span th:text="${#numbers.formatDecimal(product.price, 0, 'COMMA', 0, 'POINT')}">0</span> VNĐ<br>
+                                    <strong>Amount:</strong> <span th:text="${product.amount}">0</span>
+                                </p>
+                                <a th:href="@{'/products/' + ${product.productId}}" class="btn btn-primary btn-sm">Xem chi tiết</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div th:if="${#lists.isEmpty(products)}" class="alert alert-info">
+            <h4>Chưa có sản phẩm nào</h4>
+            <p>Cửa hàng này chưa có sản phẩm nào.</p>
+        </div>
+        
+        <div class="row mt-4">
+            <div class="col-12">
+                <a th:href="@{/products}" class="btn btn-secondary">← Quay lại danh sách cửa hàng</a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

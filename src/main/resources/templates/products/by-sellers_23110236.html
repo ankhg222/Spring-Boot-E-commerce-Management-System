@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/layout_23110236}">
+<head>
+    <title>Sản phẩm theo cửa hàng</title>
+</head>
+<body>
+    <div layout:fragment="content">
+        <div class="row">
+            <div class="col-12">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a th:href="@{/}">Trang chủ</a></li>
+                        <li class="breadcrumb-item active">Sản phẩm theo cửa hàng</li>
+                    </ol>
+                </nav>
+                
+                <h2 class="mb-4">Sản phẩm theo cửa hàng</h2>
+            </div>
+        </div>
+        
+        <div th:each="seller : ${sellersWithProducts}" class="mb-5">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <div class="row align-items-center">
+                        <div class="col-md-8">
+                            <h4 class="mb-0">
+                                <i class="fas fa-store"></i> 
+                                <span th:text="${seller.sellerName}">Tên cửa hàng</span>
+                            </h4>
+                            <small>Mã cửa hàng: <span th:text="${seller.sellerId}">1</span></small>
+                        </div>
+                        <div class="col-md-4 text-end">
+                            <span th:if="${seller.status == 1}" class="badge bg-success">Hoạt động</span>
+                            <span th:unless="${seller.status == 1}" class="badge bg-secondary">Không hoạt động</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div th:each="product : ${sellerProductsMap[seller.sellerId]}" class="col-md-6 col-lg-4 mb-3">
+                            <div class="card h-100 border">
+                                <div class="row g-0 h-100">
+                                    <div class="col-md-4">
+                                        <img th:if="${product.images != null}" 
+                                             th:src="${product.images}" 
+                                             class="img-fluid rounded-start h-100" 
+                                             style="object-fit: cover;" 
+                                             alt="Product Image">
+                                        <img th:unless="${product.images != null}" 
+                                             src="https://via.placeholder.com/150x150?text=No+Image" 
+                                             class="img-fluid rounded-start h-100" 
+                                             style="object-fit: cover;" 
+                                             alt="No Image">
+                                    </div>
+                                    <div class="col-md-8">
+                                        <div class="card-body d-flex flex-column h-100">
+                                            <h6 class="card-title">
+                                                <a th:href="@{'/products/' + ${product.productId}}" 
+                                                   th:text="${product.productName}" 
+                                                   class="text-decoration-none text-dark">Tên sản phẩm</a>
+                                            </h6>
+                                            <p class="card-text small mb-1">
+                                                <strong>Mã sản phẩm:</strong> <span th:text="${product.productCode}">123456</span>
+                                            </p>
+                                            <p class="card-text small mb-1">
+                                                <strong>Danh mục:</strong> <span th:text="${product.category.categoryName}">Danh mục</span>
+                                            </p>
+                                            <p class="card-text small mb-1">
+                                                <strong>Giá:</strong> 
+                                                <span class="text-primary fw-bold" th:text="${#numbers.formatDecimal(product.price, 0, 'COMMA', 0, 'POINT')} + ' VNĐ'">0 VNĐ</span>
+                                            </p>
+                                            <p class="card-text small mb-2">
+                                                <strong>Amount:</strong> <span th:text="${product.amount}">0</span>
+                                            </p>
+                                            <div class="mt-auto">
+                                                <a th:href="@{'/products/' + ${product.productId}}" class="btn btn-primary btn-sm">
+                                                    <i class="fas fa-eye"></i> Xem chi tiết
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div th:if="${#lists.isEmpty(sellerProductsMap[seller.sellerId])}" class="alert alert-info text-center">
+                        <i class="fas fa-info-circle"></i> Cửa hàng này chưa có sản phẩm nào.
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div th:if="${#lists.isEmpty(sellersWithProducts)}" class="alert alert-warning text-center">
+            <h4>Chưa có cửa hàng nào</h4>
+            <p>Hiện tại chưa có cửa hàng nào trong hệ thống.</p>
+        </div>
+        
+        <div class="row mt-4">
+            <div class="col-12 text-center">
+                <a th:href="@{/products}" class="btn btn-secondary me-2">
+                    <i class="fas fa-list"></i> Xem danh sách sản phẩm
+                </a>
+                <a th:href="@{/}" class="btn btn-outline-primary">
+                    <i class="fas fa-home"></i> Về trang chủ
+                </a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+
