@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/layout_23110236}">
+<head>
+    <title>Trang quản trị</title>
+</head>
+<body>
+    <div layout:fragment="content">
+        <div class="row">
+            <div class="col-md-3">
+                <div class="card">
+                    <div class="card-header">
+                        <h5>Quản trị hệ thống</h5>
+                    </div>
+                    <div class="card-body">
+                        <ul class="nav nav-pills flex-column">
+                            <li class="nav-item">
+                                <a class="nav-link" th:href="@{/admin/users}">
+                                    <i class="fas fa-users"></i> Quản lý người dùng
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" th:href="@{/admin/categories}">
+                                    <i class="fas fa-tags"></i> Quản lý danh mục
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" th:href="@{/admin/products}">
+                                    <i class="fas fa-box"></i> Quản lý sản phẩm
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" th:href="@{/admin/sellers}">
+                                    <i class="fas fa-store"></i> Quản lý cửa hàng
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-9">
+                <div class="card">
+                    <div class="card-header">
+                        <h4>Trang quản trị hệ thống</h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="card bg-primary text-white">
+                                    <div class="card-body">
+                                        <h5 class="card-title">Quản lý người dùng</h5>
+                                        <p class="card-text">Thêm, sửa, xóa và phân trang người dùng</p>
+                                        <a th:href="@{/admin/users}" class="btn btn-light">Quản lý</a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="card bg-success text-white">
+                                    <div class="card-body">
+                                        <h5 class="card-title">Quản lý danh mục</h5>
+                                        <p class="card-text">Thêm, sửa, xóa và phân trang danh mục</p>
+                                        <a th:href="@{/admin/categories}" class="btn btn-light">Quản lý</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="row mt-3">
+                            <div class="col-md-6">
+                                <div class="card bg-warning text-white">
+                                    <div class="card-body">
+                                        <h5 class="card-title">Quản lý sản phẩm</h5>
+                                        <p class="card-text">Xem và quản lý tất cả sản phẩm</p>
+                                        <a th:href="@{/admin/products}" class="btn btn-light">Quản lý</a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="card bg-info text-white">
+                                    <div class="card-body">
+                                        <h5 class="card-title">Quản lý cửa hàng</h5>
+                                        <p class="card-text">Xem và quản lý các cửa hàng</p>
+                                        <a th:href="@{/admin/sellers}" class="btn btn-light">Quản lý</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

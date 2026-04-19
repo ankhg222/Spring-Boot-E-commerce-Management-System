@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/layout_23110236}">
+<head>
+    <title>Trang chủ</title>
+</head>
+<body>
+    <div layout:fragment="content">
+        <div class="jumbotron bg-primary text-white p-5 rounded mb-4">
+            <h1 class="display-4">Chào mừng đến với hệ thống E-commerce</h1>
+            <p class="lead">Đây là đồ án Spring Boot + JPA + Thymeleaf của sinh viên Nguyễn Phước Khang - MSSV: 23110236</p>
+            <hr class="my-4">
+            <p>Hệ thống quản lý sản phẩm và cửa hàng trực tuyến</p>
+            <a class="btn btn-light btn-lg" th:href="@{/products}" role="button">Xem sản phẩm</a>
+        </div>
+        
+        <div class="row">
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-body text-center">
+                        <i class="fas fa-shopping-cart fa-3x text-primary mb-3"></i>
+                        <h5 class="card-title">Mua sắm</h5>
+                        <p class="card-text">Khám phá các sản phẩm từ nhiều cửa hàng khác nhau</p>
+                        <a th:href="@{/products}" class="btn btn-primary">Xem sản phẩm</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-body text-center">
+                        <i class="fas fa-store fa-3x text-success mb-3"></i>
+                        <h5 class="card-title">Cửa hàng</h5>
+                        <p class="card-text">Quản lý cửa hàng và sản phẩm của bạn</p>
+                        <a th:href="@{/register}" class="btn btn-success">Đăng ký bán hàng</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-body text-center">
+                        <i class="fas fa-cogs fa-3x text-warning mb-3"></i>
+                        <h5 class="card-title">Quản trị</h5>
+                        <p class="card-text">Quản lý hệ thống và người dùng</p>
+                        <a th:href="@{/admin}" class="btn btn-warning">Trang quản trị</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
